@@ -8,7 +8,7 @@ import com.mocosstore.ecommerceapplication.Exception.UsersException.UsersNotFoun
 import com.mocosstore.ecommerceapplication.Model.Users;
 import com.mocosstore.ecommerceapplication.Repository.UsersRepository;
 import jakarta.servlet.http.HttpSession;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +17,13 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UsersService {
 
     private final UsersRepository usersRepository;
+
     private final String USER_NOT_FOUND_MSG ="User with %s not found, please signup";
+
 
     public ResponseEntity<String> signup(UsersDto usersDto){
         if (usersAlreadyExists(usersDto.getEmail())){
@@ -53,9 +55,10 @@ public class UsersService {
 
     }
 
-//    public ResponseEntity<String> verificationEmail(LoginDto loginDto){
-//
-//    }
+    public ResponseEntity<String> logout(HttpSession session) {
+        session.invalidate();
+        return new ResponseEntity<>("logged out successfully", HttpStatus.OK);
+    }
     private boolean usersAlreadyExists(String email) {
         return usersRepository.findByEmail(email).isPresent();
     }
